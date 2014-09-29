@@ -1,19 +1,25 @@
 
 #include <Motor.h>
-#include "pwmsetter.h"
 
 
-Motor m(10,9,8);
+Motor m(9,8,7);
+
+int led = 13;
 
 
 void setup() 
 {
-	setPwmFrequency( 10, 2);
 	Serial.begin(9600);
-	m.forward(255);
+	m.forward(100);
+	delay(1000);
+	m.forward(1000);
+  pinMode(led, OUTPUT);     
 }
 
 void loop() 
 {
-	m.forward(255);
+	  digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(1000);               // wait for a second
+  digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+  delay(1000);
 }

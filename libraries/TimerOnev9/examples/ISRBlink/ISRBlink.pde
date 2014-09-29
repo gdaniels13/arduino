@@ -5,7 +5,7 @@ void setup()
   // Initialize the digital pin as an output.
   // Pin 13 has an LED connected on most Arduino boards
   pinMode(13, OUTPUT);    
-  
+  Serial.begin(115200);
   Timer1.initialize(100000); // set a timer of length 100000 microseconds (or 0.1 sec - or 10Hz => the led will blink 5 times, 5 cycles of on-and-off, per second)
   Timer1.attachInterrupt( timerIsr ); // attach the service routine here
 }

@@ -17,7 +17,7 @@ Motor::Motor(int a,int b,int c) //constructor with pin numbers enable, in1,in2
 }
 
 
- void Motor::forward(int in) //forward values between 0 and 1000
+ void Motor::forward(int in) //forward values between 0 and 255
 {
 	digitalWrite(in1, LOW);
 	digitalWrite(in2, HIGH);
@@ -25,7 +25,7 @@ Motor::Motor(int a,int b,int c) //constructor with pin numbers enable, in1,in2
 	if(in>255) in = 255;
 	if(in<0) in = 0;
 	analogWrite(pwm,in);
-
+	direction = 1;
 }
 
 void Motor::MoveF(float in) //float between 1 and -1 1 for forward -1 for back
@@ -40,6 +40,19 @@ void Motor::MoveF(float in) //float between 1 and -1 1 for forward -1 for back
 	}
 }
 
+void Motor::move(int in){
+	if(in<0)
+	{
+		backward((int)((-1)*in)-120);
+	}
+	else
+	{
+		forward((int) (in + 120));
+	}	
+}
+
+
+
 void Motor::backward(int in) //back  "             "
 {
 	digitalWrite(in2, LOW);
@@ -48,6 +61,7 @@ void Motor::backward(int in) //back  "             "
 	if(in>255) in = 255;
 	if(in<0) in = 0;
 	analogWrite(pwm,in);
+	direction =0;
 }
 
 void Motor::setspeed(int in)
@@ -61,7 +75,11 @@ void Motor::setspeed(int in)
 
 void Motor::stop()	//stop the motor
 {
+	analogWrite(pwm,0);
 	digitalWrite(in2, LOW);
 	digitalWrite(in1, LOW);
 }
 
+int Motor::getDirection(){
+	return direction;
+}
