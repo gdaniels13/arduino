@@ -40,9 +40,9 @@ void loop()
 
 	imu->getCurAngleKalman(angle,gyro,accelAngle);
 	blue->updateValues();
- 	// showValues();
-   	simpleRC();
-  	//updateGraph();
+ 	showValues();
+   	// simpleRC();
+  	updateGraph();
 }
 
 void updateGraph()

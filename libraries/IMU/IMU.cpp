@@ -14,10 +14,10 @@ IMU::IMU()
 }
 
 
-void IMU::Calibrate()
+void IMU::Calibrate(int sampleCount)
 {
 	gyroOffset = 0;
-	for( int i =0; i<1000; ++i)
+	for( int i =0; i<sampleCount; ++i)
 	{
 	  accel_t_gyro_union accel_t_gyro;
 
@@ -41,10 +41,10 @@ void IMU::Calibrate()
 	  accelzoffset = accel_t_gyro.value.z_accel;
 	}
 
-	gyroOffset /=1000;
-	accelxoffset /=1000;
-	accelyoffset /=1000;
-	accelzoffset /=1000;
+	gyroOffset /=sampleCount;
+	accelxoffset /=sampleCount;
+	accelyoffset /=sampleCount;
+	accelzoffset /=sampleCount;
 }
 
 

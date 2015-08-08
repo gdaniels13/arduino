@@ -4,10 +4,10 @@
 
 BalanduinoBluetooth::BalanduinoBluetooth()
 {
-	ss = new SoftwareSerial(13,12);
+	ss = new SoftwareSerial(A1,A0);
 	ss->begin(57600);
-	Serial.begin(9600);
 	lastTransmission = millis();
+	target = 180;
 }
 
 
@@ -27,7 +27,7 @@ void BalanduinoBluetooth::resetAllBool()
 
 void BalanduinoBluetooth::updateValues()
 {
-	if(ss->available())
+	if(ss->available()>2)
 	{
 		char input[30];
 		short i =0;
@@ -47,7 +47,6 @@ void BalanduinoBluetooth::updateValues()
 			}
 			++i;
 		}
-	
 		 if(input[0] == 'C'  ) //recieved a Controll command
 		 {
 			if(input[1] == 'S')
@@ -60,7 +59,8 @@ void BalanduinoBluetooth::updateValues()
 			else if(input[1]=='M')
 			{
 				readImu = true;
-				Serial.println(strtok( input,",")); //get rid of the CM,
+				strtok( input,",");
+				// Serial.println(strtok( input,",")); //get rid of the CM,
 				 direction = atof(strtok(NULL,","));
 				 speed = atof(strtok(NULL,","));
 
@@ -71,7 +71,8 @@ void BalanduinoBluetooth::updateValues()
 		 	else if (input[1] == 'J')
 			{
 				readJoystick = true;
-				Serial.println(strtok( input,",")); //get rid of the CM,
+				strtok( input,",");
+				// Serial.println(strtok( input,",")); //get rid of the CM,
 				 direction = atof(strtok(NULL,","));
 				 speed = atof(strtok(NULL,","));
 
@@ -102,8 +103,7 @@ void BalanduinoBluetooth::updateValues()
 			}
 			else if(input[1] == 'I')
 			{
-
-				 
+		 
 				 strtok( input,","); //get rid of the CM,
 				 float t = atof(strtok(NULL,","));
 				 if(((int)t )!= 0)

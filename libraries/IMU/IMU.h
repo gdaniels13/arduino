@@ -55,7 +55,7 @@ class IMU
 {
   public:
   	IMU();
-  	void Calibrate();
+  	void Calibrate(int);
   	void GetRawAccel(int& x, int& y, int & z);
   	void GetRawGyro(int& x, int& y, int & z);
     void getCurAngle(float &Xangle, float &XAngularVelocity);
@@ -74,7 +74,7 @@ class IMU
   	float gyroOffset,accelxoffset,accelyoffset,accelzoffset;
   	float angle;
     int lastUpdate;
-	Kalman filter;
+	   Kalman filter;
 	
 };
 

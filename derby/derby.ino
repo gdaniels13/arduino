@@ -5,7 +5,7 @@
 
 #include <Servo.h> 
  
-Servo myservo,myservo1;  // create servo object to control a servo 
+Servo myservo;
                 // a maximum of eight servo objects can be created 
   int led = 13;
   int trigger = 5;
@@ -17,8 +17,8 @@ void setup()
 //   blinkFast();   
   myservo.attach(2);  // attaches the servo on pin 9 to the servo object 
   myservo.write(55);
-  myservo1.attach(9);
-  myservo1.write(55);
+ 
+ 
   delay(2000);
 } 
  
@@ -31,12 +31,12 @@ void loop()
   tri(650);
   
      myservo.write(170);
-     myservo1.write(170);
+    
     digitalWrite(13,LOW);
     delay(1000);    
     
     myservo.write (40);
-    myservo1.write (40);
+   
 } 
 
 void tri(int d){

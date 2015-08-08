@@ -48,8 +48,8 @@ void loop()
 {
   timer.update();
   imu->getCurAngleKalman(angle,angularVelocity);
-  setMotorSpeed(motorSpeed,motorSpeed, myPID.GetDirection());
-//    Serial.print(angle);
+  // setMotorSpeed(motorSpeed,motorSpeed, myPID.GetDirection());
+   Serial.print(angle);
 //  Serial.print("  ");
 //  Serial.println(motorSpeed);
 }

@@ -13,33 +13,44 @@
 
 
 // IMU* imu;
-BalanduinoBluetooth * blue;
- // Motor MotorLeft(5,6,7);
- // Motor MotorRight(10,9,8);
+BalanduinoBluetooth blue;
+ Motor MotorLeft(5,6,7);
+ Motor MotorRight(10,8,9);
 
  float angle;
  float accelAngle;
  float gyro;
  float motorSpeed = 0;
  unsigned long lastTransmission = 0;
-
+ float throttle;
+ float steering;
 void setup() 
 {
-	blue = new BalanduinoBluetooth();
+	// blue = new BalanduinoBluetooth();
 	// imu = new IMU();
+  Serial.begin(9600);
+  MotorLeft.MoveF(.5);
+  MotorRight.MoveF(.5);
 }
+
 
 void loop() 
 {
 	//imu->getCurAngleKalman(angle,gyro,accelAngle);
-	blue->updateValues();
+	blue.updateValues();
+
+  // throttle = mapFloat(blue.getSpeed(),-1,1,-MAX_THROTTLE,MAX_THROTTLE);
+  // steering = mapFloat(blue.getDirection(),-1, 1,-MAX_STEERING,MAX_STEERING);
+  // Serial.print(throttle);
+  // Serial.print(" : ");
+  // Serial.println(steering);
 	
-	showValues();
-	// simpleRC();
+	// showValues();
+	simpleRC();
   //	updateGraph();
 
  	//PID();
- 	delay(20);
+ 	// delay(20);
 }
 
 // void PID()
@@ -61,48 +72,44 @@ void loop()
 
 void updateGraph()
  {
- 	if(millis() - lastTransmission > 10 && blue->getGraphBool())
+ 	if(millis() - lastTransmission > 10 && blue.getGraphBool())
  	{
  		lastTransmission = millis();
- 		blue->printGraph(accelAngle,gyro,angle);
+ 		blue.printGraph(accelAngle,gyro,angle);
  	}
  }
-
-
-
-
 
 void showValues()
 {
 	Serial.print("Speed: ");
-  	Serial.print(blue->getSpeed());
+  	Serial.print(blue.getSpeed());
   	Serial.print(" Direction: ");
-  	Serial.print(blue->getDirection()); 
+  	Serial.print(blue.getDirection()); 
   	Serial.print(" KP: ");
-  	Serial.print(blue->getKp());
+  	Serial.print(blue.getKp());
   	Serial.print(" KI: ");
-  	Serial.print(blue->getKi());
+  	Serial.print(blue.getKi());
   	Serial.print(" KD: ");
-  	Serial.println(blue->getKd());
-  	// Serial.print(" Target: ");
-  	// Serial.println(blue->getTarget());
+  	Serial.print(blue.getKd());
+  	Serial.print(" Target: ");
+  	Serial.println(blue.getTargets());
   	 
 }
 
-// void simpleRC()
-//  {
-//  	float direction = blue->getDirection();
-//  	float speed = blue->getSpeed();
-//  	float left, right;
-//  	if(!(direction < .05 && direction > -.05))
-//  	{
-//  		left = speed - (1-speed)*direction;
-//  		right =speed + (1-speed)*direction;
-//  	}
+void simpleRC()
+ {
+ 	float direction = blue.getDirection();
+ 	float speed = blue.getSpeed();
+ 	float left, right;
+ 	if(!(direction < .05 && direction > -.05))
+ 	{
+ 		left = speed - (1-speed)*direction;
+ 		right =speed + (1-speed)*direction;
+ 	}
 
-// 	MotorLeft.MoveF(left);
-//  	MotorRight.MoveF(right);
-//  }
+	MotorLeft.MoveF(left);
+ 	MotorRight.MoveF(right);
+ }
 
 
 

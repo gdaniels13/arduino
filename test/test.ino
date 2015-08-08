@@ -1,33 +1,100 @@
+#include <math.h>
 
+float j;
+float scaledResult; 
 
-void setup() 
-{
-	Serial.begin(115200);
-	InitialiseIO();
-	InitialiseInterrupt();
+void setup() {
+  Serial.begin(9600);
 }
 
 void loop(){
 
+for(int scale=-10; scale<1; scale++){
+  Serial.print("Scale:");
+  Serial.println(scale);   
+  for ( j=0; j <= 1.05; j+=0.05){
+    scaledResult = fscale( 0, 1, 0, 500, j, scale);
+
+    Serial.print(j, DEC);  
+    Serial.print("    ");  
+    Serial.println(scaledResult , DEC); 
+  }  
+}
+  while(1);
 }
 
 
-void InitialiseIO(){
-  pinMode(A0, INPUT);	   // Pin A0 is input to which a switch is connected
-  digitalWrite(A0, HIGH);   // Configure internal pull-up resistor
-  pinMode(A1, INPUT);	   // Pin A1 is input to which a switch is connected
-  digitalWrite(A1, HIGH);   // Configure internal pull-up resistor
-}
 
-void InitialiseInterrupt(){
-  cli();		// switch interrupts off while messing with their settings  
-  PCICR =0x02;          // Enable PCINT1 interrupt
-  PCMSK1 = 0b00000111;
-  sei();		// turn interrupts back on
-}
 
-ISR(PCINT1_vect) {    // Interrupt service routine. Every single PCINT8..14 (=ADC0..5) change
-            // will generate an interrupt: but this will always be the same interrupt routine
-  if (digitalRead(A0)==0)  Serial.println("A0");
-  if (digitalRead(A1)==0)  Serial.println("A1");
+float fscale( float originalMin, float originalMax, float newBegin, float newEnd, float inputValue, float curve){
+
+  float OriginalRange = 0;
+  float NewRange = 0;
+  float zeroRefCurVal = 0;
+  float normalizedCurVal = 0;
+  float rangedValue = 0;
+  boolean invFlag = 0;
+
+
+  // condition curve parameter
+  // limit range
+
+  if (curve > 10) curve = 10;
+  if (curve < -10) curve = -10;
+
+  curve = (curve * -.1) ; // - invert and scale - this seems more intuitive - postive numbers give more weight to high end on output
+  curve = pow(10, curve); // convert linear scale into lograthimic exponent for other pow function
+
+  /*
+   Serial.println(curve * 100, DEC);   // multply by 100 to preserve resolution  
+   Serial.println();
+   */
+
+  // Check for out of range inputValues
+  if (inputValue < originalMin) {
+    inputValue = originalMin;
+  }
+  if (inputValue > originalMax) {
+    inputValue = originalMax;
+  }
+
+  // Zero Refference the values
+  OriginalRange = originalMax - originalMin;
+
+  if (newEnd > newBegin){
+    NewRange = newEnd - newBegin;
+  }
+  else
+  {
+    NewRange = newBegin - newEnd;
+    invFlag = 1;
+  }
+
+  zeroRefCurVal = inputValue - originalMin;
+  normalizedCurVal  =  zeroRefCurVal / OriginalRange;   // normalize to 0 - 1 float
+
+  /*
+  Serial.print(OriginalRange, DEC);  
+   Serial.print("   ");  
+   Serial.print(NewRange, DEC);  
+   Serial.print("   ");  
+   Serial.println(zeroRefCurVal, DEC);  
+   Serial.println();  
+   */
+
+  // Check for originalMin > originalMax  - the math for all other cases i.e. negative numbers seems to work out fine
+  if (originalMin > originalMax ) {
+    return 0;
+  }
+
+  if (invFlag == 0){
+    rangedValue =  (pow(normalizedCurVal, curve) * NewRange) + newBegin;
+
+  }
+  else     // invert the ranges
+  {  
+    rangedValue =  newBegin - (pow(normalizedCurVal, curve) * NewRange);
+  }
+
+  return rangedValue;
 }

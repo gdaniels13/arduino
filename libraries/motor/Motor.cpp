@@ -1,6 +1,8 @@
 #include "Motor.h"
 #include <Arduino.h> 
-
+// #include <SoftPWM.h> 
+// #define pwmFunction SoftPWMSet
+#define pwmFunction analogWrite
 Motor::Motor()
 {
 
@@ -11,6 +13,7 @@ Motor::Motor(int a,int b,int c) //constructor with pin numbers enable, in1,in2
 	pwm = a;
 	in1 = b;
 	in2 = c;
+	pinMode(pwm,OUTPUT);
 	pinMode(in1,OUTPUT);
 	pinMode(in2,OUTPUT);
 	stop();
@@ -24,7 +27,7 @@ Motor::Motor(int a,int b,int c) //constructor with pin numbers enable, in1,in2
 	
 	if(in>255) in = 255;
 	if(in<0) in = 0;
-	analogWrite(pwm,in);
+	pwmFunction(pwm,in);
 	direction = 1;
 }
 
@@ -60,7 +63,7 @@ void Motor::backward(int in) //back  "             "
 	
 	if(in>255) in = 255;
 	if(in<0) in = 0;
-	analogWrite(pwm,in);
+	pwmFunction(pwm,in);
 	direction =0;
 }
 
@@ -75,7 +78,7 @@ void Motor::setspeed(int in)
 
 void Motor::stop()	//stop the motor
 {
-	analogWrite(pwm,0);
+	pwmFunction(pwm,0);
 	digitalWrite(in2, LOW);
 	digitalWrite(in1, LOW);
 }
